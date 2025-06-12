@@ -1,21 +1,21 @@
-# Custom mapper POC
+# HTTP GET request mapper
 
-This prototype uses a custom mapper to add a result from an external service to user's tokens. 
+This mapper uses a custom mapper to add a result from an external service (HTTP GET resquest) to user's tokens.
 
 ## Build
 
-This project uses Maven, needs at least JDK 11 (openjdk).
+This project uses Maven, needs at least JDK 2x1 (openjdk).
 
 The mock service is written in Python with its own docker build.
 
-``` 
+```
 mvn clean install package
 docker-compose build
 ```
 
 ## Run
 
-Just run it, it will import all needed data : 
+Just run it, it will import all needed data :
 
 ```
 docker-compose up -d
@@ -23,21 +23,20 @@ docker-compose up -d
 
 ## Usage
 
-Realm "custom-mapper" has what you need.
 
-A custom scope : 
+Create a custom scope :
 
-![](.README_images/883b68be.png)
+![image.png](assets/image1.png)
 
-with a our custom mapper : 
+with a our custom mapper :
 
-![](.README_images/ab8688ba.png)
+![image.png](assets/image.png)
 
-## Test
 
-Just open : 
-[https://playground.please-open.it?url=http://127.0.0.1:8080&realm=custom-mapper&client=playground&scopes=custom](https://playground.please-open.it?url=http://127.0.0.1:8080&realm=custom-mapper&client=playground&scopes=custom)
+In URI, you can have placeholders :
 
-The "custom" scope runs the mapper and adds our custom result from the web service in both tokens : 
+- $userID : replaces with the user id (sub)
+- $userName : replaces with the username
+- $userEmail : replaces with the user email
 
-![](.README_images/0079c8fc.png)
+"field to map" extracts the field from the response (json format) and adds it to the token.

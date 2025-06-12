@@ -3,16 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>poc-mapper</artifactId>
+    <artifactId>HTTP-GET-request-mapper</artifactId>
     <groupId>it.please-open</groupId>
-    <name>poc custom mapper</name>
+    <name>HTTP GET request mapper</name>
     <version>1</version>
     <packaging>jar</packaging>
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <version>1.0-SNAPSHOT</version>
-        <keycloak.version>17.0.0</keycloak.version>
+        <keycloak.version>26.2.0</keycloak.version>
     </properties>
     <build>
         <plugins>
@@ -21,7 +21,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <finalName>poc-custom-mapper</finalName>
+                    <finalName>HTTP-GET-request-mapper</finalName>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>

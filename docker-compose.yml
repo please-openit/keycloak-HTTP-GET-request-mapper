@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   keycloak:
-    image: "quay.io/keycloak/keycloak:17.0.0"
+    image: "quay.io/keycloak/keycloak:26.2.4"
     restart: always
     environment:
       KEYCLOAK_ADMIN: admin
@@ -10,9 +10,7 @@ services:
       DEBUG: "true"
       DEBUG_PORT: '*:8787'
     entrypoint: /bin/bash
-    command: -c "/opt/keycloak/bin/kc.sh import --file /tmp/realm-export.json && /opt/keycloak/bin/kc.sh start-dev"
-
-
+    command: -c "/opt/keycloak/bin/kc.sh && /opt/keycloak/bin/kc.sh start-dev"
     ports:
       - "127.0.0.1:8080:8080"
       - "127.0.0.1:8787:8787"
@@ -20,11 +18,4 @@ services:
       - 8080
       - 8787
     volumes:
-      - ./target/poc-custom-mapper.jar:/opt/keycloak/providers/poc-custom-mapper.jar
-      - ./realm-export.json:/tmp/realm-export.json
-
-  service-mock:
-    build: ./service-mock
-    restart: always
-    ports:
-      - "127.0.0.1:5000:5000"
+      - ./target/HTTP-GET-request-mapper.jar:/opt/keycloak/providers/HTTP-GET-request-mapper.jar
