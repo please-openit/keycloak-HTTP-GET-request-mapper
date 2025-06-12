@@ -2,6 +2,7 @@ package it.pleaseopen;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import org.jboss.logging.Logger;
 import org.keycloak.broker.provider.util.SimpleHttp;
 import org.keycloak.models.*;
 import org.keycloak.protocol.oidc.mappers.*;
@@ -9,7 +10,6 @@ import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.IDToken;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +19,7 @@ public class HttpGetRequestMapper extends AbstractOIDCProtocolMapper implements 
 
     public static final String PROVIDER_ID = "HTTP-GET-request-mapper";
     private static final List<ProviderConfigProperty> configProperties = new ArrayList<>();
+    protected static final Logger logger = Logger.getLogger(HttpGetRequestMapper.class);
 
     static {
         ProviderConfigProperty propertyUrl = new ProviderConfigProperty();
@@ -58,7 +59,7 @@ public class HttpGetRequestMapper extends AbstractOIDCProtocolMapper implements 
         // The builtin protocol mapper let the user define under which claim name (key)
         // the protocol mapper writes its value. To display this option in the generic dialog
         // in keycloak, execute the following method.
-        //OIDCAttributeMapperHelper.addTokenClaimNameConfig(configProperties);
+        OIDCAttributeMapperHelper.addTokenClaimNameConfig(configProperties);
         // The builtin protocol mapper let the user define for which tokens the protocol mapper
         // is executed (access token, id token, user info). To add the config options for the different types
         // to the dialog execute the following method. Note that the following method uses the interfaces
@@ -97,10 +98,14 @@ public class HttpGetRequestMapper extends AbstractOIDCProtocolMapper implements 
     @Override
     public AccessToken transformAccessToken(AccessToken token, ProtocolMapperModel mappingModel, KeycloakSession session, UserSessionModel userSession, ClientSessionContext var5){
         Map<String, String> headers = new HashMap<>();
-        JsonArray headersArray = JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
-        headersArray.forEach(o -> {
-            headers.put(o.getAsJsonObject().get("key").getAsString(), o.getAsJsonObject().get("value").getAsString());
-        });
+        try {
+            JsonArray headersArray = JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
+            headersArray.forEach(o -> {
+                headers.put(o.getAsJsonObject().get("key").getAsString(), o.getAsJsonObject().get("value").getAsString());
+            });
+        }catch(NullPointerException e) {
+            // no headers defined, continue
+        }
         String response = sendRequest(mappingModel.getConfig().get("URL"), mappingModel.getConfig().get("field"), headers, mappingModel.getConfig().get("timeout"),  userSession.getUser(), session);
         OIDCAttributeMapperHelper.mapClaim(token, mappingModel, response);
         return token;
@@ -109,10 +114,14 @@ public class HttpGetRequestMapper extends AbstractOIDCProtocolMapper implements 
     @Override
     public AccessToken transformUserInfoToken(AccessToken token, ProtocolMapperModel mappingModel, KeycloakSession session, UserSessionModel userSession, ClientSessionContext var5){
         Map<String, String> headers = new HashMap<>();
-        com.google.gson.JsonArray headersArray = com.google.gson.JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
+        try{
+        JsonArray headersArray = JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
         headersArray.forEach(o -> {
             headers.put(o.getAsJsonObject().get("key").getAsString(), o.getAsJsonObject().get("value").getAsString());
         });
+    }catch(NullPointerException e) {
+        // no headers defined, continue
+    }
         String response = sendRequest(mappingModel.getConfig().get("URL"), mappingModel.getConfig().get("field"), headers, mappingModel.getConfig().get("timeout"), userSession.getUser(), session);
         OIDCAttributeMapperHelper.mapClaim(token, mappingModel, response);
         return token;
@@ -121,10 +130,14 @@ public class HttpGetRequestMapper extends AbstractOIDCProtocolMapper implements 
     @Override
     public IDToken transformIDToken(IDToken token, ProtocolMapperModel mappingModel, KeycloakSession session, UserSessionModel userSession, ClientSessionContext var5){
         Map<String, String> headers = new HashMap<>();
-        com.google.gson.JsonArray headersArray = com.google.gson.JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
+        try{
+        JsonArray headersArray = JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
         headersArray.forEach(o -> {
             headers.put(o.getAsJsonObject().get("key").getAsString(), o.getAsJsonObject().get("value").getAsString());
         });
+        }catch(NullPointerException e) {
+            // no headers defined, continue
+        }
         String response = sendRequest(mappingModel.getConfig().get("URL"), mappingModel.getConfig().get("field"), headers, mappingModel.getConfig().get("timeout"), userSession.getUser(), session);
          OIDCAttributeMapperHelper.mapClaim(token, mappingModel, response);
         return token;
@@ -132,10 +145,14 @@ public class HttpGetRequestMapper extends AbstractOIDCProtocolMapper implements 
 
     public AccessToken transformIntrospectionToken(AccessToken token, ProtocolMapperModel mappingModel, KeycloakSession session, UserSessionModel userSession, ClientSessionContext var5){
         Map<String, String> headers = new HashMap<>();
-        com.google.gson.JsonArray headersArray = com.google.gson.JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
+        try{
+        JsonArray headersArray = JsonParser.parseString(mappingModel.getConfig().get("headers")).getAsJsonArray();
         headersArray.forEach(o -> {
             headers.put(o.getAsJsonObject().get("key").getAsString(), o.getAsJsonObject().get("value").getAsString());
         });
+        }catch(NullPointerException e) {
+            // no headers defined, continue
+        }
         String response = sendRequest(mappingModel.getConfig().get("URL"), mappingModel.getConfig().get("field"), headers, mappingModel.getConfig().get("timeout"), userSession.getUser(), session);
         OIDCAttributeMapperHelper.mapClaim(token, mappingModel, response);
         return token;
@@ -150,9 +167,9 @@ public class HttpGetRequestMapper extends AbstractOIDCProtocolMapper implements 
             }
             simpleHttp.connectTimeoutMillis(Integer.parseInt(timeout));
             return simpleHttp.asJson().get(field).asText();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("unable to perform GET request to external service", e);
         }
-        return null;
+        return "";
     }
 }
