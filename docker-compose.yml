@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   keycloak:
-    image: "quay.io/keycloak/keycloak:26.3.0"
+    image: "quay.io/keycloak/keycloak:26.4.0"
     restart: always
     environment:
       KEYCLOAK_ADMIN: admin
@@ -18,5 +18,5 @@ services:
       - 8080
       - 8787
     volumes:
-      - ./deployments/please-open.it-HTTP-GET-request-mapper-26.2.4-SNAPSHOT-jar-with-dependencies.jar:/opt/keycloak/providers/please-open.it-HTTP-GET-request-mapper-26.2.4-SNAPSHOT-jar-with-dependencies.jar
+      - ./deployments/please-open.it-HTTP-GET-request-mapper-26.4.0-SNAPSHOT-jar-with-dependencies.jar:/opt/keycloak/providers/please-open.it-HTTP-GET-request-mapper-26.4.0-SNAPSHOT-jar-with-dependencies.jar
       
