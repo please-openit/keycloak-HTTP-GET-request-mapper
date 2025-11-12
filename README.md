@@ -1,6 +1,6 @@
 # HTTP GET request mapper
 
-This mapper uses a custom mapper to add a result from an external service (HTTP GET resquest) to user's tokens.
+This mapper uses a custom mapper to add a result from an external service (HTTP GET request) to user's tokens.
 
 ## Build
 
