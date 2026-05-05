@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>it.pleaseopen</groupId>
 		<artifactId>keycloak-spis</artifactId>
-		<version>26.6.1</version>
+		<version>rolling</version>
 	</parent>
 
     <dependencies>
