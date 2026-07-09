@@ -22,7 +22,7 @@ variables:
 
   RELEASE_BINARY: "please-open.it-HTTP-GET-request-mapper-${CI_COMMIT_TAG}-jar-with-dependencies.jar"
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/myawesomerelease/${CI_COMMIT_TAG}/"
-  KEYCLOAK_VERSION: "26.6.1"
+  KEYCLOAK_VERSION: "26.7.0"
   JAVA_VERSION: "21"
 
 stages:
